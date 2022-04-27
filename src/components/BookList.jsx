@@ -6,16 +6,9 @@ import CommentArea from './CommentArea'
 
 const BookList = ({books}) => {
 
-    // state = {
-    //     searchQuery: '',
-    //     selectedBook: null
-    // }
-
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedBook, setSelectedBook] = useState(null)
 
-
-    
         return (
             <Container>
                 <Row>

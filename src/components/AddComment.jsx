@@ -1,40 +1,37 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form } from 'react-bootstrap'
 
-class AddComment extends Component {
+const AddComment = ({asin}) => {
 
-    state = {
-        comment: {
-            comment: '',
-            rate: 1,
-            elementId: null
-        }
-    }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.asin !== this.props.asin) {
-            this.setState({
-                comment: {
-                    ...this.state.comment,
-                    elementId: this.props.asin
-                }
-            })
-        }
-    }
+    const [comment, setComment] = useState({
+        comment: '',
+        rate: 1,
+        elementId: null
+    })
 
-    sendComment = async (e) => {
+    useEffect(() => {
+        setComment({
+            ...comment,
+            elementId: asin
+        })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [asin])
+
+
+
+    const sendComment = async (e) => {
         e.preventDefault()
         try {
             let response = await fetch('https://striveschool-api.herokuapp.com/api/comments', {
                 method: 'POST',
-                body: JSON.stringify(this.state.comment),
+                body: JSON.stringify(comment),
                 headers: {
                     'Content-type': 'application/json',
-                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGI3OWY5NTgxNmI1YjAwMTU5NDA3NDAiLCJpYXQiOjE2MjI2NDY2NzcsImV4cCI6MTYyMzg1NjI3N30.y-rBwB5WAQOWBvWrLlAgTQUrbGulxd2M6cWH3VLyGLw'
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjU2YmQxZGE5MDIzOTAwMTVkOTY1YzgiLCJpYXQiOjE2NTEwNjA1MjgsImV4cCI6MTY1MjI3MDEyOH0.9BrLnG4aN2N5V74FypgjQ0KUrzWzWLSL6fKhbhiISjY'
                 }
             })
             if (response.ok) {
-                // the comment has been sent succesfully!!
                 alert('Comment was sent!')
             } else {
                 console.log('error')
@@ -45,33 +42,31 @@ class AddComment extends Component {
         }
     }
 
-    render() {
+    
         return (
             <div>
-                <Form onSubmit={this.sendComment}>
+                <Form onSubmit={sendComment}>
                     <Form.Group>
                         <Form.Label>Comment text</Form.Label>
                         <Form.Control
                             type="text"
                             placeholder="Add comment here"
-                            value={this.state.comment.comment}
-                            onChange={e => this.setState({
-                                comment: {
-                                    ...this.state.comment,
+                            value={comment.comment}
+                            onChange={e => {
+                                setComment({
+                                    ...comment,
                                     comment: e.target.value
-                                }
-                            })}
+                                })}}
                         />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Rating</Form.Label>
-                        <Form.Control as="select" value={this.state.comment.rate}
-                            onChange={e => this.setState({
-                                comment: {
-                                    ...this.state.comment,
+                        <Form.Control as="select" value={comment.rate}
+                            onChange={e => setComment({
+                                    ...comment,
                                     rate: e.target.value
-                                }
-                            })}>
+                                })
+                            }>
                             <option>1</option>
                             <option>2</option>
                             <option>3</option>
@@ -85,7 +80,7 @@ class AddComment extends Component {
                 </Form>
             </div>
         )
-    }
+    
 }
 
 export default AddComment
